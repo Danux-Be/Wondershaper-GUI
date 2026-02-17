@@ -53,6 +53,19 @@ class SettingsWindow(Gtk.Window):
         root = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         self.add(root)
 
+        # Status indicator at the top
+        status_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        status_label = Gtk.Label()
+        status_text = app.t("status_enabled") if app.config.get("enabled") else app.t("status_disabled")
+        active_preset = app.config.get("active_preset", "Work")
+        preset_text = app.t("status_active_preset", preset=active_preset)
+        status_label.set_markup(f"<b>{status_text}</b> — {preset_text}")
+        status_box.pack_start(status_label, True, True, 0)
+        root.pack_start(status_box, False, False, 0)
+
+        separator = Gtk.Separator()
+        root.pack_start(separator, False, False, 0)
+
         self.iface_combo = Gtk.ComboBoxText()
         self._fill_ifaces()
         root.pack_start(self._row(app.t("settings_iface"), self.iface_combo), False, False, 0)
@@ -77,6 +90,15 @@ class SettingsWindow(Gtk.Window):
         self.startup_check = Gtk.CheckButton.new_with_label(app.t("settings_startup"))
         self.startup_check.set_active(bool(app.config.get("start_on_login", False)))
         root.pack_start(self.startup_check, False, False, 0)
+
+        preset_mgmt_bar = Gtk.Box(spacing=8)
+        add_preset_btn = Gtk.Button(label=app.t("preset_add"))
+        delete_preset_btn = Gtk.Button(label=app.t("preset_delete"))
+        add_preset_btn.connect("clicked", self.on_add_preset)
+        delete_preset_btn.connect("clicked", self.on_delete_preset)
+        preset_mgmt_bar.pack_start(add_preset_btn, True, True, 0)
+        preset_mgmt_bar.pack_start(delete_preset_btn, True, True, 0)
+        root.pack_start(preset_mgmt_bar, False, False, 0)
 
         button_bar = Gtk.Box(spacing=8)
         apply_btn = Gtk.Button(label=app.t("settings_apply_now"))
@@ -129,6 +151,41 @@ class SettingsWindow(Gtk.Window):
 
     def on_preset_changed(self, _widget: Gtk.Widget) -> None:
         self._load_current_preset()
+
+    def on_add_preset(self, _widget: Gtk.Widget) -> None:
+        name = self.name_entry.get_text().strip()
+        if not name:
+            self.app.notify("error_preset_empty_name")
+            return
+        try:
+            down_mbps = int(self.down_entry.get_text())
+            up_mbps = int(self.up_entry.get_text())
+            new_preset = {"name": name, "down_mbps": down_mbps, "up_mbps": up_mbps}
+            validate_preset(new_preset)
+            self.app.config["presets"].append(new_preset)
+            self.app.save_config()
+            self.app.rebuild_menu()
+            self._fill_presets()
+            self.preset_combo.set_active_id(name)
+            self.app.notify("preset_added")
+        except (ValueError, TypeError):
+            self.app.notify("error_invalid_values")
+
+    def on_delete_preset(self, _widget: Gtk.Widget) -> None:
+        if len(self.app.config["presets"]) <= 1:
+            self.app.notify("error_cannot_delete_last")
+            return
+        selected = self.preset_combo.get_active_id()
+        if selected == "Custom":
+            self.app.notify("error_cannot_delete_last")
+            return
+        self.app.config["presets"] = [p for p in self.app.config["presets"] if p["name"] != selected]
+        if self.app.config.get("active_preset") == selected:
+            self.app.config["active_preset"] = self.app.config["presets"][0]["name"]
+        self.app.save_config()
+        self.app.rebuild_menu()
+        self._fill_presets()
+        self.app.notify("preset_deleted")
 
     def on_apply(self, _widget: Gtk.Widget) -> None:
         self._save_to_config()

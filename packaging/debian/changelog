@@ -1,3 +1,14 @@
+<<<<<<< copilot/vscode-mlqm5qvk-vf5h
+wondershaper-quicktoggle (1.1.0-1) unstable; urgency=medium
+
+  * v1.1.0 release.
+  * Add French, German, and Spanish translations.
+  * Add preset management: "Add Preset" and "Delete Preset" buttons.
+  * Add visual status indicator in settings window.
+  * Enhanced user experience with dynamic menu updates.
+
+ -- Wondershaper QuickToggle Maintainers <maintainers@example.invalid>  Mon, 17 Feb 2026 12:00:00 +0000
+
 wondershaper-quicktoggle (1.0.0-1) unstable; urgency=medium
 
   * v1.0.0 release.
@@ -6,4 +17,14 @@ wondershaper-quicktoggle (1.0.0-1) unstable; urgency=medium
   * Handle corrupted config files gracefully.
   * Replace deprecated locale.getdefaultlocale() with locale.getlocale().
 
+=======
+wondershaper-quicktoggle (1.0.0-1) unstable; urgency=medium
+
+  * v1.0.0 release.
+  * Fix autostart Exec path to use packaged launcher.
+  * Add input validation for rate fields in settings.
+  * Handle corrupted config files gracefully.
+  * Replace deprecated locale.getdefaultlocale() with locale.getlocale().
+
+>>>>>>> main
  -- Wondershaper QuickToggle Maintainers <maintainers@example.invalid>  Tue, 17 Feb 2026 00:00:00 +0000
