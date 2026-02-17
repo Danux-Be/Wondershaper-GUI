@@ -150,27 +150,31 @@ class SettingsWindow(Gtk.Window):
         self.app.config["language"] = language
         self.app.i18n.set_language(language)
 
-        if selected == "Custom":
-            self.app.config["custom"] = {
-                "down_mbps": int(self.down_entry.get_text()),
-                "up_mbps": int(self.up_entry.get_text()),
-            }
-        else:
-            new_preset = {
-                "name": self.name_entry.get_text(),
-                "down_mbps": self.down_entry.get_text(),
-                "up_mbps": self.up_entry.get_text(),
-            }
-            updated = validate_preset(new_preset)
-            replaced = False
-            for idx, preset in enumerate(self.app.config["presets"]):
-                if preset["name"] == selected:
-                    self.app.config["presets"][idx] = updated
-                    replaced = True
-                    break
-            if not replaced:
-                self.app.config["presets"].append(updated)
-            selected = updated["name"]
+        try:
+            if selected == "Custom":
+                self.app.config["custom"] = {
+                    "down_mbps": int(self.down_entry.get_text()),
+                    "up_mbps": int(self.up_entry.get_text()),
+                }
+            else:
+                new_preset = {
+                    "name": self.name_entry.get_text(),
+                    "down_mbps": self.down_entry.get_text(),
+                    "up_mbps": self.up_entry.get_text(),
+                }
+                updated = validate_preset(new_preset)
+                replaced = False
+                for idx, preset in enumerate(self.app.config["presets"]):
+                    if preset["name"] == selected:
+                        self.app.config["presets"][idx] = updated
+                        replaced = True
+                        break
+                if not replaced:
+                    self.app.config["presets"].append(updated)
+                selected = updated["name"]
+        except (ValueError, TypeError):
+            self.app.notify("error_invalid_values")
+            return
 
         self.app.config["active_preset"] = selected
         self.app.config["start_on_login"] = self.startup_check.get_active()
@@ -336,7 +340,7 @@ class QuickToggleApp:
                 "[Desktop Entry]\n"
                 "Type=Application\n"
                 "Name=Wondershaper QuickToggle\n"
-                f"Exec={Path(__file__).resolve()}\n"
+                "Exec=/usr/bin/wondershaper-quicktoggle\n"
                 "X-GNOME-Autostart-enabled=true\n"
             )
             AUTOSTART_PATH.write_text(desktop, encoding="utf-8")

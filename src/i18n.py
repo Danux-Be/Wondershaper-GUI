@@ -25,7 +25,10 @@ class I18N:
         return result
 
     def detect_system_language(self) -> str:
-        lang, _ = locale.getdefaultlocale()
+        try:
+            lang, _ = locale.getlocale()
+        except ValueError:
+            return self.default_language
         if not lang:
             return self.default_language
         return lang.split("_")[0]

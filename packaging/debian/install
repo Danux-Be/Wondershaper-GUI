@@ -1,4 +1,5 @@
 data/bin/wondershaper-quicktoggle usr/bin/
+src/__init__.py usr/lib/wondershaper-quicktoggle/
 src/main.py usr/lib/wondershaper-quicktoggle/
 src/app.py usr/lib/wondershaper-quicktoggle/
 src/backend.py usr/lib/wondershaper-quicktoggle/
