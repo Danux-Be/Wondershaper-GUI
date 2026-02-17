@@ -4,7 +4,7 @@
 <policyconfig>
   <vendor>Wondershaper QuickToggle</vendor>
   <vendor_url>https://example.invalid/wondershaper-quicktoggle</vendor_url>
-  <action id="io.github.wondershaper.quicktoggle.manage">
+  <action id="io.github.wondershaper.quicktoggle">
     <description>Manage traffic shaping limits</description>
     <message>Authentication is required to manage traffic shaping limits</message>
     <defaults>

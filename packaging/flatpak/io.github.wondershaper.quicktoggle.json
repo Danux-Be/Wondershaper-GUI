@@ -1,0 +1,40 @@
+{
+  "app-id": "io.github.wondershaper.quicktoggle",
+  "runtime": "org.gnome.Platform",
+  "runtime-version": "46",
+  "sdk": "org.gnome.Sdk",
+  "command": "wondershaper-quicktoggle",
+  "finish-args": [
+    "--share=ipc",
+    "--socket=x11",
+    "--socket=wayland",
+    "--share=network",
+    "--talk-name=org.freedesktop.Notifications"
+  ],
+  "modules": [
+    {
+      "name": "wondershaper-quicktoggle",
+      "buildsystem": "simple",
+      "build-commands": [
+        "install -Dm755 data/bin/wondershaper-quicktoggle /app/bin/wondershaper-quicktoggle",
+        "install -Dm755 src/main.py /app/lib/wondershaper-quicktoggle/main.py",
+        "install -Dm755 src/app.py /app/lib/wondershaper-quicktoggle/app.py",
+        "install -Dm644 src/backend.py /app/lib/wondershaper-quicktoggle/backend.py",
+        "install -Dm644 src/config.py /app/lib/wondershaper-quicktoggle/config.py",
+        "install -Dm644 src/i18n.py /app/lib/wondershaper-quicktoggle/i18n.py",
+        "cp -a i18n /app/lib/wondershaper-quicktoggle/",
+        "install -Dm644 data/applications/wondershaper-quicktoggle.desktop /app/share/applications/wondershaper-quicktoggle.desktop",
+        "install -Dm644 data/icons/hicolor/scalable/apps/wondershaper-quicktoggle.svg /app/share/icons/hicolor/scalable/apps/wondershaper-quicktoggle.svg",
+        "install -Dm644 data/icons/hicolor/scalable/status/wondershaper-quicktoggle-off-symbolic.svg /app/share/icons/hicolor/scalable/status/wondershaper-quicktoggle-off-symbolic.svg",
+        "install -Dm644 data/icons/hicolor/scalable/status/wondershaper-quicktoggle-on-symbolic.svg /app/share/icons/hicolor/scalable/status/wondershaper-quicktoggle-on-symbolic.svg",
+        "install -Dm644 data/icons/hicolor/scalable/status/wondershaper-quicktoggle-timer-symbolic.svg /app/share/icons/hicolor/scalable/status/wondershaper-quicktoggle-timer-symbolic.svg"
+      ],
+      "sources": [
+        {
+          "type": "dir",
+          "path": "../../"
+        }
+      ]
+    }
+  ]
+}

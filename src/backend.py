@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 IFACE_RE = re.compile(r"^[a-zA-Z0-9_.:-]{1,32}$")
+MIN_MBPS = 1
+MAX_MBPS = 10000
 
 
 @dataclass
@@ -48,8 +50,8 @@ class ShaperBackend:
         return names
 
     def apply_limits(self, iface: str, down_mbps: int, up_mbps: int) -> BackendResult:
-        self._validate(iface, down_mbps, up_mbps)
-        return self._run_helper(["apply", "--iface", iface, "--down", str(down_mbps), "--up", str(up_mbps)])
+        normalized_down, normalized_up = self._validate(iface, down_mbps, up_mbps)
+        return self._run_helper(["apply", "--iface", iface, "--down", str(normalized_down), "--up", str(normalized_up)])
 
     def clear_limits(self, iface: str) -> BackendResult:
         self._validate_iface(iface)
@@ -57,17 +59,7 @@ class ShaperBackend:
 
     def check_status(self, iface: str) -> BackendResult:
         self._validate_iface(iface)
-        tc_ok = shutil.which("tc") is not None
-        if not tc_ok:
-            return BackendResult(ok=False, message="tc_not_found")
-        try:
-            output = subprocess.check_output(["tc", "qdisc", "show", "dev", iface], text=True)
-        except subprocess.CalledProcessError as exc:
-            return BackendResult(ok=False, message="iface_not_found", details={"stderr": exc.stderr})
-        except FileNotFoundError:
-            return BackendResult(ok=False, message="tc_not_found")
-        enabled = ("tbf" in output) or ("htb" in output)
-        return BackendResult(ok=True, message="enabled" if enabled else "disabled", details={"raw": output.strip()})
+        return self._run_helper(["status", "--iface", iface])
 
     def _run_helper(self, args: List[str]) -> BackendResult:
         cmd = ["pkexec", str(self.helper_path), *args]
@@ -89,20 +81,69 @@ class ShaperBackend:
         except json.JSONDecodeError:
             return BackendResult(ok=True, message="ok", details={"raw": stdout})
 
-    def _validate(self, iface: str, down_mbps: int, up_mbps: int) -> None:
+
+    def detect_ssid(self) -> Optional[str]:
+        ssid = self._ssid_from_nmcli()
+        if ssid:
+            return ssid
+        return self._ssid_from_iwgetid()
+
+    def read_package_version(self) -> Optional[str]:
+        try:
+            output = subprocess.check_output(["dpkg-query", "-W", "-f=${Version}", "wondershaper-quicktoggle"], text=True)
+            version = output.strip()
+            return version or None
+        except (FileNotFoundError, subprocess.SubprocessError):
+            return None
+
+    def _validate(self, iface: str, down_mbps: int, up_mbps: int) -> tuple[int, int]:
         self._validate_iface(iface)
-        if down_mbps <= 0 or up_mbps <= 0:
+        down = self._normalize_mbps(down_mbps)
+        up = self._normalize_mbps(up_mbps)
+        return down, up
+
+    def _normalize_mbps(self, value: int) -> int:
+        if value < MIN_MBPS:
             raise ValueError("invalid_mbps")
-        if down_mbps > 10000 or up_mbps > 10000:
-            raise ValueError("invalid_mbps")
+        return min(value, MAX_MBPS)
 
     def _validate_iface(self, iface: str) -> None:
         if not IFACE_RE.match(iface):
             raise ValueError("invalid_iface")
 
+    def _ssid_from_nmcli(self) -> Optional[str]:
+        if shutil.which("nmcli") is None:
+            return None
+        commands = [
+            ["nmcli", "-t", "-f", "ACTIVE,SSID", "dev", "wifi"],
+            ["nmcli", "-t", "-f", "ACTIVE,SSID", "dev", "wifi", "list"],
+        ]
+        for cmd in commands:
+            try:
+                output = subprocess.check_output(cmd, text=True)
+            except subprocess.SubprocessError:
+                continue
+            for line in output.splitlines():
+                if line.startswith("yes:"):
+                    _, _, ssid = line.partition(":")
+                    ssid = ssid.strip()
+                    if ssid:
+                        return ssid
+        return None
+
+    def _ssid_from_iwgetid(self) -> Optional[str]:
+        if shutil.which("iwgetid") is None:
+            return None
+        try:
+            output = subprocess.check_output(["iwgetid", "-r"], text=True)
+        except subprocess.SubprocessError:
+            return None
+        ssid = output.strip()
+        return ssid or None
+
     def _iface_from_ip_route(self) -> Optional[str]:
         try:
-            output = subprocess.check_output(["ip", "route", "show", "default"], text=True)
+            output = subprocess.check_output(["ip", "route", "get", "1.1.1.1"], text=True)
         except (FileNotFoundError, subprocess.SubprocessError):
             return None
         for line in output.splitlines():
