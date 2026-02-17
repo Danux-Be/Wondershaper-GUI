@@ -1,0 +1,1 @@
+"""Wondershaper QuickToggle package."""

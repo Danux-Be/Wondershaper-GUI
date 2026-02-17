@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Wondershaper QuickToggle
+Exec=/usr/bin/wondershaper-quicktoggle
+Icon=wondershaper-quicktoggle
+X-GNOME-Autostart-enabled=true

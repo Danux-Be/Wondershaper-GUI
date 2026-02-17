@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Wondershaper QuickToggle
+Comment=Quickly enable or disable bandwidth shaping from the tray
+Exec=/usr/bin/wondershaper-quicktoggle
+Icon=wondershaper-quicktoggle
+Terminal=false
+Categories=Network;Utility;

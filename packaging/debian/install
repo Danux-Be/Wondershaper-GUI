@@ -1,0 +1,12 @@
+src/main.py usr/bin/wondershaper-quicktoggle
+src/app.py usr/lib/wondershaper-quicktoggle/
+src/backend.py usr/lib/wondershaper-quicktoggle/
+src/config.py usr/lib/wondershaper-quicktoggle/
+src/i18n.py usr/lib/wondershaper-quicktoggle/
+helper/wsqt_helper.py usr/lib/wondershaper-quicktoggle/
+i18n/en.json usr/share/wondershaper-quicktoggle/i18n/
+data/icons/hicolor/scalable/apps/wondershaper-quicktoggle.svg usr/share/icons/hicolor/scalable/apps/
+data/icons/hicolor/scalable/status/wondershaper-quicktoggle-symbolic.svg usr/share/icons/hicolor/scalable/status/
+data/applications/wondershaper-quicktoggle.desktop usr/share/applications/
+data/autostart/wondershaper-quicktoggle.desktop usr/share/wondershaper-quicktoggle/
+data/polkit/io.github.wondershaper.quicktoggle.policy usr/share/polkit-1/actions/
