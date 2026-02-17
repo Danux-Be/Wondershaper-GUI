@@ -19,8 +19,11 @@ class ConfigStore:
     def load(self) -> Dict[str, Any]:
         if not self.path.exists():
             return self.default_config()
-        with self.path.open("r", encoding="utf-8") as handle:
-            data = json.load(handle)
+        try:
+            with self.path.open("r", encoding="utf-8") as handle:
+                data = json.load(handle)
+        except (json.JSONDecodeError, OSError):
+            return self.default_config()
         merged = self.default_config()
         merged.update(data)
         if not merged.get("presets"):
