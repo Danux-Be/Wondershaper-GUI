@@ -18,10 +18,12 @@ This MVP uses **Python 3 + PyGObject (GTK3) + Ayatana AppIndicator + libnotify**
   - Quit
 - Immediate apply/disable with desktop notifications.
 - Settings window:
+  - Visual status indicator (enabled/disabled + active preset)
   - Interface selector with auto-detect
   - Preset editor (name/down/up)
+  - Add/Delete preset buttons for custom preset management
   - Apply now, Disable, Save
-  - Language selector (English catalog included; ready for new languages)
+  - Language selector (English, French, German, Spanish)
   - Start on login checkbox
 - Privileged helper with Polkit for running `wondershaper`/`tc` safely.
 - Configuration at `~/.config/wondershaper-quicktoggle/config.json`.
