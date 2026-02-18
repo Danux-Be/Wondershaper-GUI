@@ -1,4 +1,17 @@
-<<<<<<< copilot/vscode-mlqm5qvk-vf5h
+# Wondershaper QuickToggle v1.1.1 — Release Notes
+
+## Overview
+
+Wondershaper QuickToggle v1.1.1 is a small patch release that fixes the tray icon tooltip so it shows the correct application name.
+
+## Changes Since 1.1.0
+
+- **Tray tooltip fix** — The tooltip now displays "Wondershaper QuickToggle" instead of "Main.py".
+- **Process naming** — Added `setproctitle` to set the process name at startup.
+- **Packaging** — Added `python3-setproctitle` to Debian dependencies.
+
+---
+
 # Wondershaper QuickToggle v1.1.0 — Release Notes
 
 ## Overview
@@ -24,9 +37,6 @@ Wondershaper QuickToggle v1.1 adds multi-language support and preset management 
 - README updated with new feature list
 
 ---
-
-=======
->>>>>>> main
 # Wondershaper QuickToggle v1.0.0 — Release Notes
 
 ## Overview
