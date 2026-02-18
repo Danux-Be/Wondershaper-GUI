@@ -60,10 +60,10 @@ Download and install the latest `.deb` package from [GitHub Releases](https://gi
 
 ```bash
 # Download the latest release
-wget https://github.com/Danux-Be/Wondershaper-GUI/releases/download/v1.1.0/wondershaper-quicktoggle_1.1.0-1_all.deb
+wget https://github.com/Danux-Be/Wondershaper-GUI/releases/download/v1.1.1/wondershaper-quicktoggle_1.1.1-1_all.deb
 
 # Install
-sudo apt install ./wondershaper-quicktoggle_1.1.0-1_all.deb
+sudo apt install ./wondershaper-quicktoggle_1.1.1-1_all.deb
 ```
 
 Or visit the [Releases page](https://github.com/Danux-Be/Wondershaper-GUI/releases) to download manually.
